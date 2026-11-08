@@ -193,3 +193,55 @@ function setup() {
   rootFolder_();
   NETWORKS.forEach(n => Logger.log(`${n.tab}: ${readNetwork_(n).length} รายการ`));
 }
+
+/**
+ * ค้นพิกัดจริงจาก Google Maps ให้แถวที่ช่องพิกัดยังว่าง แล้วเขียนกลับลงชีต (เติมอำเภอให้ด้วยถ้าว่าง)
+ * - โรงเรียน (Sheet1, OVN-DAYTRIP): ค้นด้วยชื่อโรงเรียน + จังหวัด
+ * - บุคคล (จอส904, ครูก): ค้นด้วยอำเภอ + จังหวัด (ได้ตำแหน่งระดับอำเภอ)
+ * กด Run ซ้ำได้ ทำต่อจากแถวที่ยังว่าง (รันครั้งละไม่เกิน ~5 นาที)
+ */
+function fillCoords() {
+  const ss = SpreadsheetApp.getActive();
+  const geo = Maps.newGeocoder().setRegion('th').setLanguage('th');
+  const start = Date.now();
+  let done = 0, skipped = 0, left = 0;
+  NETWORKS.forEach(n => {
+    const sh = ss.getSheetByName(n.tab) || (n.key === 'unit' ? ss.getSheets()[0] : null);
+    if (!sh || sh.getLastRow() < 2) return;
+    let head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0].map(norm_);
+    const col = names => { for (const h of names) { const i = head.indexOf(norm_(h)); if (i > -1) return i; } return -1; };
+    let ampCol = col(['อำเภอ']);
+    if (ampCol < 0 && n.key === 'unit') {             // บัญชีโรงเรียนเดิมยังไม่มีคอลัมน์อำเภอ → เพิ่มท้ายตาราง
+      ampCol = sh.getLastColumn();
+      sh.getRange(1, ampCol + 1).setValue('อำเภอ').setFontWeight('bold');
+      head.push(norm_('อำเภอ'));
+    }
+    const nameCol = col(['โรงเรียน', 'ชื่อ-สกุล']), provCol = col(['จังหวัด']), llCol = col(['พิกัด', 'ที่ตั้ง googlemap']);
+    if (nameCol < 0 || provCol < 0 || llCol < 0) return;
+    const isPerson = n.key === 'jos' || n.key === 'kru';
+    const rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getDisplayValues();
+    rows.forEach((r, i) => {
+      const name = String(r[nameCol]).trim(), prov = String(r[provCol]).trim().replace(/^กรุงเทพฯ?$/, 'กรุงเทพมหานคร');
+      const amp = ampCol > -1 ? String(r[ampCol] || '').trim() : '';
+      if (!name || !prov || /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(String(r[llCol]).trim())) return;
+      if (Date.now() - start > 5 * 60 * 1000) { left++; return; }
+      let query;
+      if (isPerson) { if (!amp) { skipped++; return; } query = `อำเภอ${amp.replace(/^(อำเภอ|อ\.)/, '')} จังหวัด${prov}`; }
+      else query = (/^(โรงเรียน|วิทยาลัย|มหาวิทยาลัย|สถาบัน|ศูนย์)/.test(name) ? name : 'โรงเรียน' + name) + ' จังหวัด' + prov;
+      try {
+        const res = geo.geocode(query);
+        const hit = (res.results || []).find(x => x.formatted_address.indexOf(prov.replace('มหานคร', '')) > -1);
+        if (!hit) { skipped++; return; }
+        const loc = hit.geometry.location;
+        sh.getRange(i + 2, llCol + 1).setValue(`${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`);
+        if (ampCol > -1 && !amp) {
+          const c = hit.address_components.find(a => a.types.indexOf('administrative_area_level_2') > -1);
+          if (c) sh.getRange(i + 2, ampCol + 1).setValue(c.long_name.replace(/^(อำเภอ|เขต)\s*/, ''));
+        }
+        done++;
+        Utilities.sleep(120);
+      } catch (e) { skipped++; }
+    });
+  });
+  Logger.log(`ใส่พิกัดแล้ว ${done} แถว · หาไม่เจอ ${skipped} แถว (ใส่เองได้)` + (left ? ` · ยังเหลือ ${left} แถว กด Run อีกครั้ง` : ''));
+}

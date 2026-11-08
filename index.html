@@ -238,7 +238,7 @@ nav a .dot{display:none}
       <div class="box">
         <div class="legend" id="legend"></div>
         <div id="map" role="img" aria-label="แผนที่ประเทศไทยแสดงตำแหน่งเครือข่าย"></div>
-        <div class="note">จุดที่ไม่มีพิกัดในชีต ระบบวางไว้กลางจังหวัดแบบกระจายเล็กน้อย ใส่พิกัด (ละติจูด, ลองจิจูด) ในชีตเพื่อให้ตำแหน่งตรง</div>
+        <div class="note">จุดทึบ = มีพิกัดจริง · จุดโปร่งเส้นประ = ยังไม่มีพิกัด วางไว้กลางจังหวัดชั่วคราว · มุมขวาบนสลับเป็นภาพดาวเทียมได้</div>
       </div>
       <div class="box">
         <h3 style="margin-bottom:8px">แยกตามจังหวัด <span class="small" style="display:inline">· กดที่จังหวัดเพื่อดูรายอำเภอ</span></h3>
@@ -424,14 +424,17 @@ function provTable(){
 }
 /* ---------- home: map ---------- */
 let map, layers={}, show={jos:true,unit:true,trip:true,kru:true};
-function jitter(seed){ let h=0; for(const c of seed) h=(h*31+c.charCodeAt(0))|0; const a=(h%360)*Math.PI/180, r=0.06+((h>>>8)%100)/100*0.16; return [Math.sin(a)*r,Math.cos(a)*r]; }
+function jitter(seed){ let h=0; for(const c of seed) h=(h*31+c.charCodeAt(0))|0; const a=(h%360)*Math.PI/180, r=0.02+((h>>>8)%100)/100*0.05; return [Math.sin(a)*r,Math.cos(a)*r]; }
 function pos(x){ if(x.ll){ const [la,lo]=x.ll.split(",").map(Number); if(isFinite(la)&&isFinite(lo)) return [la,lo]; }
   const c=PROV_LL[x.prov]; if(!c) return null; const j=jitter(x.name+x.unit+(x.amp||"")); return [c[0]+j[0],c[1]+j[1]]; }
 function drawMap(){
   if(typeof L==="undefined"){ $("map").innerHTML='<div class="empty" style="height:100%;display:grid;place-items:center">โหลดแผนที่ไม่ได้ ตรวจการเชื่อมต่ออินเทอร์เน็ต</div>'; return; }
   if(!map){
     map=L.map("map",{scrollWheelZoom:false,minZoom:5}).setView([13.3,100.9],7);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:18}).addTo(map);
+    const street=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19}).addTo(map);
+    const sat=L.layerGroup([L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{attribution:"Imagery &copy; Esri",maxZoom:19}),
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:19})]);
+    L.control.layers({"แผนที่":street,"ดาวเทียม":sat},null,{position:"topright"}).addTo(map);
     $("legend").innerHTML=NETS.map(n=>`<label style="--c:var(--n-${n.key})"><input type="checkbox" data-net="${n.key}" checked><span class="dot"></span>${esc(n.short)} <b id="lg-${n.key}"></b></label>`).join("");
     $("legend").addEventListener("change",e=>{const k=e.target.dataset.net; show[k]=e.target.checked; show[k]?layers[k].addTo(map):map.removeLayer(layers[k]);});
   }
@@ -440,8 +443,9 @@ function drawMap(){
     if(layers[n.key]) map.removeLayer(layers[n.key]);
     const col=cssVar("--n-"+n.key), g=L.layerGroup(); let c=0;
     D[n.key].forEach(x=>{ const p=pos(x); if(!p) return; c++; pts.push(p);
-      L.circleMarker(p,{radius:6,color:"#fff",weight:1.5,fillColor:col,fillOpacity:.9})
-       .bindPopup(`<b>${esc(x.name)}</b><br>${esc(n.short)}${x.unit?"<br>"+esc(x.unit):""}${x.group?"<br>กลุ่ม "+esc(x.group):""}<br>${esc([x.amp,x.prov].filter(Boolean).join(" · "))}${x.ll?"":"<br><i>ตำแหน่งโดยประมาณ</i>"}`).addTo(g); });
+      const exact=!!x.ll, gq=exact?x.ll.replace(/\s+/g,""):encodeURIComponent(x.name+" "+x.prov);
+      L.circleMarker(p,exact?{radius:6,color:"#fff",weight:1.5,fillColor:col,fillOpacity:.95}:{radius:5,color:col,weight:2,dashArray:"2 2",fillColor:col,fillOpacity:.25})
+       .bindPopup(`<b>${esc(x.name)}</b><br>${esc(n.short)}${x.unit?"<br>"+esc(x.unit):""}${x.group?"<br>กลุ่ม "+esc(x.group):""}<br>${esc([x.amp,x.prov].filter(Boolean).join(" · "))}${exact?"":"<br><i>ยังไม่มีพิกัด · ตำแหน่งโดยประมาณ</i>"}<br><a href="https://www.google.com/maps/search/?api=1&query=${gq}" target="_blank" rel="noopener">เปิดใน Google Maps ↗</a>`).addTo(g); });
     layers[n.key]=g; if(show[n.key]) g.addTo(map); $("lg-"+n.key).textContent=c;
   });
   if(pts.length && !map._fitted){ map.fitBounds(pts,{padding:[20,20],maxZoom:9}); map._fitted=true; }
