@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>จิตอาสา 904 · แผนที่เครือข่าย · ศอญ.</title>
+<meta name="description" content="ศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน · แผนที่ผู้ผ่านการฝึกอบรมหลักสูตรจิตอาสา 904 รวม 35 รุ่น">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=2">
+<link rel="apple-touch-icon" href="icon.png?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน">
+<meta property="og:title" content="จิตอาสา 904 · แผนที่เครือข่าย">
+<meta property="og:description" content="ผู้ผ่านการฝึกอบรมหลักสูตรจิตอาสา 904 รวม 35 รุ่น ปักหมุดตามอำเภอที่ทำงาน">
+<meta property="og:url" content="https://nongnobee01-ui.github.io/volunteer-schools/jos904.html">
+<meta property="og:image" content="https://nongnobee01-ui.github.io/volunteer-schools/og.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<style>
+:root{
+  --sun:#FFD21F; --royal:#1F4FA8; --royal-ink:#173B7E;
+  --bg:#FBFAF5; --surface:#FFFFFF; --fg:#1B2133; --muted:#5E6577; --line:#E7E3D6; --chip:#F2EFE4;
+  --r-bkk:#7B3FB8; --r1:#1F4FA8; --r2:#1E8A5A; --r3:#D9480F; --r4:#B7791F;
+  --display:"Mitr","Anuphan",system-ui,sans-serif;
+  --body:"Anuphan","Leelawadee UI","Noto Sans Thai",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+h1,h2{font-family:var(--display);font-weight:500;margin:0}
+.band{background:var(--sun);padding:12px 0}
+.band .wrap{display:flex;gap:14px;align-items:center}
+.logo{width:58px;height:58px;border-radius:50%;object-fit:contain}
+.eyebrow{font-size:12px;color:var(--royal-ink);font-weight:600}
+.band h1{font-size:23px;color:var(--royal-ink);line-height:1.2}
+.band .sub{font-size:13px;color:var(--royal-ink)}
+nav{background:#173B7E;position:sticky;top:0;z-index:1100}
+nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav a{color:#DCE6FA;text-decoration:none;padding:11px 12px;font-size:15px;white-space:nowrap;border-bottom:3px solid transparent}
+nav a.on{color:#fff;border-color:var(--sun);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px}
+.filters input,.filters select{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:8px 10px;min-width:0}
+.filters input{flex:1 1 240px}
+.filters select{flex:0 1 auto;max-width:220px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--royal)}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.stat b{font-family:var(--display);font-weight:500;font-size:18px;color:var(--fg);margin-right:4px;font-variant-numeric:tabular-nums}
+.leg{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);margin-right:8px;cursor:pointer;border:0;background:none;padding:2px 4px;border-radius:6px;font-family:inherit}
+.leg i{width:11px;height:11px;border-radius:50%;background:var(--c)}
+.leg.off{opacity:.35}
+#map{height:68vh;min-height:420px;border-radius:14px;border:1px solid var(--line);background:#0b1a2e}
+.layers{position:absolute;z-index:1000;top:10px;right:10px;display:flex;background:#fff;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.25);overflow:hidden}
+.layers button{border:0;background:#fff;padding:7px 11px;font:13px var(--body);cursor:pointer;color:var(--fg)}
+.layers button.on{background:var(--royal);color:#fff}
+.mapbox{position:relative}
+/* หมุดชื่อ */
+.pin{display:flex;align-items:center;gap:5px;background:#fff;border-radius:999px;padding:2px 9px 2px 2px;box-shadow:0 1px 4px rgba(0,0,0,.35);white-space:nowrap;font:600 12px var(--body);color:#1B2133;transform:translate(-14px,-14px);width:max-content;border:2px solid var(--c)}
+.pin i{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-style:normal;font:600 12px var(--display)}
+.pin.approx{border-style:dashed}
+.leaflet-div-icon.pinwrap{background:none;border:0}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(255,210,31,.45)}
+.marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:#FFD21F;color:#173B7E;font:600 12px var(--body)}
+.leaflet-popup-content{font:14px/1.5 var(--body);margin:12px 14px;min-width:230px}
+.pp h3{font:500 16px var(--display);margin:0 0 2px}
+.pp .nk{color:var(--muted);font-size:13px}
+.pp dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:8px 0 0;font-size:13px}
+.pp dt{color:var(--muted)}
+.pp dd{margin:0}
+.pp .tag{display:inline-block;background:var(--c);color:#fff;border-radius:6px;padding:0 7px;font-size:12px;margin-right:4px}
+.pp .warn{color:#B7791F;font-size:12px;margin-top:6px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:14px 0;overflow:hidden}
+.list h2{font-size:17px;padding:14px 16px 6px}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:13px;background:#FCFBF7;position:sticky;top:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:#FFF9DD}
+td small{display:block;color:var(--muted);font-size:12px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:6px}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 16px;font-size:13px;color:var(--muted)}
+.live{font-size:13px;color:var(--muted);margin-top:6px}
+.note{font-size:12px;color:var(--muted);margin:6px 0 20px}
+@media (max-width:760px){
+  .band h1{font-size:19px}
+  #map{height:60vh}
+  .hide-sm{display:none}
+  .filters select{flex:1 1 45%;max-width:none}
+}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <img class="logo" alt="ตราศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน" src="icon.png?v=2">
+  <div>
+    <div class="eyebrow">ศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน</div>
+    <h1>แผนที่จิตอาสา 904</h1>
+    <div class="sub" id="sub">ผู้ผ่านการฝึกอบรม หลักสูตรหลักประจำ / พื้นฐาน / พื้นฐาน (ภาค) รวม 35 รุ่น</div>
+  </div>
+</div></header>
+<nav><div class="wrap">
+  <a href="./#home">ภาพรวม</a>
+  <a href="jos904.html" class="on">แผนที่ จอส.904</a>
+  <a href="./#activity">สรุปรายวัน / รายเดือน</a>
+  <a href="weekly.html">สรุปประจำสัปดาห์</a>
+  <a href="./#report">+ รายงานกิจกรรม</a>
+</div></nav>
+
+<main class="wrap">
+  <div class="filters">
+    <input id="q" type="search" placeholder="ค้นชื่อ ชื่อเล่น รหัส ตำแหน่ง หรือสังกัด" aria-label="ค้นหา">
+    <select id="fCourse" aria-label="หลักสูตร"><option value="">ทุกหลักสูตร</option></select>
+    <select id="fBatch" aria-label="รุ่น"><option value="">ทุกรุ่น</option></select>
+    <select id="fProv" aria-label="จังหวัด"><option value="">ทุกจังหวัด</option></select>
+    <select id="fMin" aria-label="กระทรวง"><option value="">ทุกกระทรวง/หน่วยงาน</option></select>
+    <button class="btn" id="reset">ล้างตัวกรอง</button>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="stats" id="legend"></div>
+  <div class="mapbox">
+    <div id="map" role="region" aria-label="แผนที่ดาวเทียมแสดงหมุดรายชื่อจิตอาสา 904"></div>
+    <div class="layers"><button data-l="sat" class="on">ดาวเทียม</button><button data-l="road">แผนที่ถนน</button></div>
+  </div>
+  <div class="live" id="live">กำลังโหลดข้อมูล…</div>
+
+  <div class="list">
+    <h2>รายชื่อ <small id="listNote" style="font:13px var(--body);color:var(--muted)"></small></h2>
+    <div class="tbl"><table>
+      <thead><tr><th>ชื่อ-สกุล</th><th>หลักสูตร / รุ่น</th><th class="hide-sm">ตำแหน่ง / สังกัด</th><th>อำเภอ / จังหวัด</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <div class="pager"><span id="pinfo"></span><button class="btn" id="pprev">‹ ก่อนหน้า</button><button class="btn" id="pnext">ถัดไป ›</button></div>
+  </div>
+  <div class="note">หมุดวางตามอำเภอที่ทำงาน (ไม่ใช่ที่อยู่จริงรายคน) — คนในอำเภอเดียวกันจะกระจายรอบจุดกลางอำเภอ · หมุดเส้นประ = ทราบแค่จังหวัด · ภาพดาวเทียม © Esri, Maxar · แผนที่ถนน © OpenStreetMap</div>
+</main>
+
+<script>
+const REG = { "กทม.":{c:"var(--r-bkk)",hex:"#7B3FB8",t:"กทม."}, "1":{c:"var(--r1)",hex:"#1F4FA8",t:"ภาค 1"}, "2":{c:"var(--r2)",hex:"#1E8A5A",t:"ภาค 2"}, "3":{c:"var(--r3)",hex:"#D9480F",t:"ภาค 3"}, "4":{c:"var(--r4)",hex:"#B7791F",t:"ภาค 4"} };
+const $ = id => document.getElementById(id);
+const fmt = n => Number(n||0).toLocaleString("th-TH");
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s||"").toLowerCase().replace(/\s+/g,"");
+const regOf = p => REG[p.reg] || {c:"#5E6577",hex:"#5E6577",t:p.reg||"-"};
+const ampLabel = p => { const a=String(p.amp||"").replace(/^(อำเภอ|อ\.|เขต)\s*/,""); if(!a||a==="-") return ""; return (p.prov==="กรุงเทพมหานคร"?"เขต":"อ.")+a; };
+const firstChar = n => { const m = String(n).replace(/^\s+/,"").match(/[ก-ฮA-Za-z]/); return m ? m[0] : "•"; };
+
+let P=[], shown=[], page=0, regOff=new Set();
+const PER=50;
+
+// แผนที่
+const map = L.map("map",{zoomControl:true, preferCanvas:false}).setView([13.4,101],6);
+const sat = L.layerGroup([
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"ภาพ © Esri, Maxar, Earthstar Geographics"}),
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:19})
+]).addTo(map);
+const road = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
+document.querySelectorAll(".layers button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".layers button").forEach(x=>x.classList.toggle("on",x===b));
+  if(b.dataset.l==="sat"){ map.removeLayer(road); sat.addTo(map);} else { map.removeLayer(sat); road.addTo(map);} });
+const cluster = L.markerClusterGroup({chunkedLoading:true, maxClusterRadius:55, spiderfyOnMaxZoom:true, showCoverageOnHover:false, disableClusteringAtZoom:16});
+map.addLayer(cluster);
+
+function popup(p){
+  const r=regOf(p);
+  return `<div class="pp"><h3>${esc(p.rank)} ${esc(p.name)}</h3>${p.nick?`<div class="nk">ชื่อเล่น ${esc(p.nick)}</div>`:""}
+  <div style="margin-top:6px"><span class="tag" style="--c:${r.hex}">${esc(r.t)}</span><span class="tag" style="--c:#173B7E">${esc(p.course)}${p.batch?" รุ่น "+esc(p.batch):""}</span></div>
+  <dl><dt>รหัส</dt><dd>${esc(p.id)}</dd>
+  ${p.pos?`<dt>ตำแหน่ง</dt><dd>${esc(p.pos)}</dd>`:""}
+  ${p.org?`<dt>สังกัด</dt><dd>${esc(p.org)}${p.org2&&p.org2!==p.org?` · ${esc(p.org2)}`:""}</dd>`:""}
+  ${p.min?`<dt>กระทรวง</dt><dd>${esc(p.min)}</dd>`:""}
+  <dt>ที่ทำงาน</dt><dd>${esc(ampLabel(p))} ${p.prov==="กรุงเทพมหานคร"?"":"จ."}${esc(p.prov)}</dd>
+  ${p.mission?`<dt>ภารกิจพิเศษ</dt><dd>${esc(p.mission)}</dd>`:""}</dl>
+  ${p.q===1?`<div class="warn">ตำแหน่งหมุดประมาณกลางจังหวัด (หาอำเภอไม่เจอ)</div>`:""}</div>`;
+}
+
+function build(j){
+  const K=j.keys;
+  P=j.rows.map(r=>{const o={}; K.forEach((k,i)=>o[k]=r[i]); return o;});
+  // กระจายคนในจุดเดียวกันแบบดอกทานตะวัน
+  const G={};
+  P.forEach(p=>{ if(!p.ll) return; const k=p.ll.join(","); (G[k]||(G[k]=[])).push(p); });
+  Object.values(G).forEach(arr=>arr.forEach((p,i)=>{
+    const a=i*2.39996, d=0.0016*Math.sqrt(i);
+    p.pos2=[p.ll[0]+d*Math.sin(a), p.ll[1]+d*Math.cos(a)/Math.cos(p.ll[0]*Math.PI/180)];
+  }));
+  P.forEach(p=>{
+    p.s=norm([p.name,p.nick,p.id,p.pos,p.org,p.org2,p.min,p.amp,p.prov].join(" "));
+    if(!p.pos2) return;
+    const r=regOf(p);
+    const html=`<div class="pin${p.q===1?" approx":""}" style="--c:${r.hex}"><i>${esc(firstChar(p.name))}</i>${esc(p.rank)} ${esc(p.name)}</div>`;
+    p.m=L.marker(p.pos2,{icon:L.divIcon({className:"pinwrap",html,iconSize:null}),title:p.name}).bindPopup(()=>popup(p),{maxWidth:320});
+  });
+  const opt=(el,vals)=>{el.insertAdjacentHTML("beforeend",vals.map(v=>`<option>${esc(v)}</option>`).join(""));};
+  const cnt=f=>{const c={}; P.forEach(p=>{const v=f(p); if(v) c[v]=(c[v]||0)+1;}); return c;};
+  opt($("fCourse"),Object.keys(cnt(p=>p.course)).sort((a,b)=>a.localeCompare(b,"th")));
+  opt($("fProv"),Object.keys(cnt(p=>p.prov)).sort((a,b)=>a.localeCompare(b,"th")));
+  opt($("fMin"),Object.entries(cnt(p=>p.min)).sort((a,b)=>b[1]-a[1]).map(e=>e[0]));
+  fillBatch();
+  $("sub").textContent=`ผู้ผ่านการฝึกอบรม หลักสูตรจิตอาสา 904 รวม 35 รุ่น · ${fmt(P.length)} คน · ข้อมูล ณ ${j.updated}`;
+  apply();
+}
+
+function batchKey(b){ const m=String(b).match(/(\d+)\/(\d+)/); return m? (+m[2])*100+(+m[1]) : 0; }
+function fillBatch(){
+  const c=$("fCourse").value, cur=$("fBatch").value;
+  const set=[...new Set(P.filter(p=>!c||p.course===c).map(p=>p.batch).filter(Boolean))].sort((a,b)=>batchKey(a)-batchKey(b));
+  $("fBatch").innerHTML=`<option value="">ทุกรุ่น</option>`+set.map(v=>`<option>${esc(v)}</option>`).join("");
+  if(set.includes(cur)) $("fBatch").value=cur;
+}
+
+function apply(){
+  const q=norm($("q").value), c=$("fCourse").value, b=$("fBatch").value, pv=$("fProv").value, mn=$("fMin").value;
+  const base=P.filter(p=>(!q||p.s.includes(q))&&(!c||p.course===c)&&(!b||p.batch===b)&&(!pv||p.prov===pv)&&(!mn||p.min===mn));
+  shown=base.filter(p=>!regOff.has(p.reg));
+  // legend ตามภาค (นับจากผลกรองก่อนปิดภาค)
+  const rc={}; base.forEach(p=>rc[p.reg]=(rc[p.reg]||0)+1);
+  $("legend").innerHTML=Object.keys(REG).map(k=>`<button class="leg${regOff.has(k)?" off":""}" data-r="${k}" style="--c:${REG[k].hex}" title="กดเพื่อซ่อน/แสดง"><i></i>${REG[k].t} · ${fmt(rc[k]||0)}</button>`).join("");
+  document.querySelectorAll(".leg").forEach(el=>el.onclick=()=>{const r=el.dataset.r; regOff.has(r)?regOff.delete(r):regOff.add(r); apply();});
+  const provs=new Set(shown.map(p=>p.prov)), amps=new Set(shown.filter(p=>p.q===2).map(p=>p.prov+"|"+p.amp));
+  const noLoc=shown.filter(p=>!p.m).length;
+  $("stats").innerHTML=[[fmt(shown.length),"คน"],[fmt(provs.size),"จังหวัด"],[fmt(amps.size),"อำเภอ"],[fmt(new Set(shown.map(p=>p.course+p.batch)).size),"รุ่น"]]
+    .map(([b,l])=>`<span class="stat"><b>${b}</b>${l}</span>`).join("")+(noLoc?`<span class="stat">ไม่มีพิกัด ${fmt(noLoc)} คน (ดูในรายชื่อ)</span>`:"");
+  cluster.clearLayers();
+  cluster.addLayers(shown.filter(p=>p.m).map(p=>p.m));
+  const filtered = q||c||b||pv||mn||regOff.size;
+  if(filtered && shown.some(p=>p.m)){
+    const bb=L.latLngBounds(shown.filter(p=>p.m).map(p=>p.pos2));
+    map.fitBounds(bb.pad(0.15),{maxZoom:14});
+  }
+  page=0; renderList();
+}
+
+function renderList(){
+  const n=shown.length, pages=Math.max(1,Math.ceil(n/PER));
+  page=Math.min(page,pages-1);
+  const slice=shown.slice(page*PER,(page+1)*PER);
+  $("listNote").textContent = `${fmt(n)} คน · กดชื่อเพื่อดูบนแผนที่`;
+  $("rows").innerHTML = slice.map((p,i)=>{const r=regOf(p); return `<tr data-i="${page*PER+i}"><td><span class="dot" style="--c:${r.hex}"></span>${esc(p.rank)} ${esc(p.name)}${p.nick?`<small>${esc(p.nick)} · ${esc(p.id)}</small>`:`<small>${esc(p.id)}</small>`}</td><td>${esc(p.course)}<small>รุ่น ${esc(p.batch)} · ${esc(r.t)}</small></td><td class="hide-sm">${esc(p.pos)}<small>${esc(p.org)}</small></td><td>${esc(String(p.amp||"").replace(/^(อำเภอ|อ\.)\s*/,""))}<small>${esc(p.prov)}</small></td></tr>`}).join("") || `<tr><td colspan="4" style="color:var(--muted)">ไม่พบรายชื่อตามตัวกรอง</td></tr>`;
+  $("pinfo").textContent = n ? `${fmt(page*PER+1)}–${fmt(Math.min(n,(page+1)*PER))} จาก ${fmt(n)}` : "";
+  $("pprev").disabled = page===0; $("pnext").disabled = page>=pages-1;
+  document.querySelectorAll("#rows tr[data-i]").forEach(tr=>tr.onclick=()=>{
+    const p=shown[+tr.dataset.i]; if(!p.m) return;
+    $("map").scrollIntoView({behavior:"smooth",block:"center"});
+    cluster.zoomToShowLayer(p.m,()=>p.m.openPopup());
+  });
+}
+
+let t; $("q").oninput=()=>{clearTimeout(t); t=setTimeout(apply,250);};
+$("fCourse").onchange=()=>{fillBatch(); apply();};
+["fBatch","fProv","fMin"].forEach(id=>$(id).onchange=apply);
+$("reset").onclick=()=>{$("q").value="";["fCourse","fProv","fMin"].forEach(id=>$(id).value=""); fillBatch(); $("fBatch").value=""; regOff.clear(); apply(); map.setView([13.4,101],6);};
+$("pprev").onclick=()=>{page--; renderList();};
+$("pnext").onclick=()=>{page++; renderList();};
+
+fetch("jos904.json").then(r=>{ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+  .then(j=>{ build(j); $("live").textContent=`แสดงหมุดตามอำเภอที่ทำงาน · ซูมเข้าเพื่อเห็นชื่อรายคน กดหมุดเพื่อดูข้อมูล`; })
+  .catch(e=>{ $("live").textContent="โหลดข้อมูลไม่สำเร็จ ("+e.message+")"; });
+</script>
+</body>
+</html>
