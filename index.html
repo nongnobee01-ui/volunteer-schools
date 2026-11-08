@@ -200,7 +200,12 @@ nav a .dot{display:none}
   nav a.on{background:rgba(255,255,255,.14);border-left-color:#FFD21F}
   nav a .dot{display:inline-block}
   nav a.cta{margin:6px 0 2px;justify-content:center;border-left:0;padding:9px 12px}
-  .shell main.wrap{margin:0;max-width:1180px;width:100%;padding-left:28px;padding-right:max(28px,env(safe-area-inset-right,0px))}
+  .shell main.wrap{margin:0;max-width:none;width:100%;padding-left:28px;padding-right:max(28px,env(safe-area-inset-right,0px))}
+  .band .wrap,footer.wrap{max-width:none;margin:0;padding-left:max(24px,env(safe-area-inset-left,0px))}
+  footer.wrap{padding-left:288px}
+  #map{height:max(560px,calc(100vh - 330px))}
+  .tbl-wrap{max-height:max(560px,calc(100vh - 330px))}
+  .feed{max-width:none}
 }
 </style>
 </head>
