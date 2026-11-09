@@ -64,10 +64,9 @@ nav a.on{color:#fff;border-color:var(--sun);font-weight:600}
 .pin i{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-style:normal;font:600 12px var(--display)}
 .pin.approx{border-style:dashed}
 .leaflet-div-icon.pinwrap{background:none;border:0}
-.marker-cluster{border-radius:50%;background-clip:padding-box}
-.marker-cluster div{width:30px;height:30px;margin:5px;border-radius:50%;text-align:center;line-height:30px}
-.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(255,210,31,.5);box-shadow:0 0 0 2px rgba(23,59,126,.6)}
-.marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:#FFD21F;color:#173B7E;font:600 12px var(--body)}
+.donut{background:none;border:0}
+.donut svg{display:block;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+.donut text{font:600 12px var(--body);fill:#173B7E}
 .leaflet-popup-content{font:14px/1.5 var(--body);margin:12px 14px;min-width:230px}
 .pp h3{font:500 16px var(--display);margin:0 0 2px}
 .pp .nk{color:var(--muted);font-size:13px}
@@ -89,6 +88,12 @@ td small{display:block;color:var(--muted);font-size:12px}
 .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 16px;font-size:13px;color:var(--muted)}
 .live{font-size:13px;color:var(--muted);margin-top:6px}
 .note{font-size:12px;color:var(--muted);margin:6px 0 20px}
+.howto{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--fg)}
+.howto summary{cursor:pointer;font-weight:600;color:var(--royal-ink)}
+.howto ul{margin:6px 0 2px;padding-left:2px;list-style:none;display:grid;gap:5px}
+.howto li{line-height:1.5}
+.howto svg,.howto .pin-demo{vertical-align:middle;margin-right:6px}
+.howto .pin-demo{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1E8A5A;color:#fff;font:600 11px var(--display);border:2px solid #fff;box-shadow:0 0 0 2px #1E8A5A}
 @media (max-width:760px){
   .band h1{font-size:19px}
   #map{height:60vh}
@@ -125,6 +130,17 @@ td small{display:block;color:var(--muted);font-size:12px}
   </div>
   <div class="stats" id="stats"></div>
   <div class="stats" id="legend"></div>
+  <details class="howto" open>
+    <summary>วิธีอ่านแผนที่</summary>
+    <ul>
+      <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle r="8" cx="11" cy="11" fill="#fff"/><circle r="8" cx="11" cy="11" fill="none" stroke="#1F4FA8" stroke-width="4" stroke-dasharray="30 20.3" transform="rotate(-90 11 11)"/><circle r="8" cx="11" cy="11" fill="none" stroke="#7B3FB8" stroke-width="4" stroke-dasharray="20.3 30" stroke-dashoffset="-30" transform="rotate(-90 11 11)"/></svg>
+        <b>วงกลมมีตัวเลข</b> = จำนวนคนที่ทำงานอยู่บริเวณนั้น · <b>สีของวงแหวน</b> = สัดส่วนภาคของคนในกลุ่ม (สีเดียวกับแถบด้านบน) · วางเมาส์/แตะค้างเพื่อดูตัวเลขแต่ละภาค · กดวงกลมเพื่อซูมเข้า</li>
+      <li><span class="pin-demo">น</span><b>ป้ายชื่อ</b> = รายคน กดเพื่อดูรายละเอียด · สีขอบป้าย = ภาค · ป้าย<b>เส้นประ</b> = รู้แค่จังหวัด ปักไว้กลางจังหวัด</li>
+      <li><b>ตำแหน่งหมุด</b> = อำเภอที่ทำงาน (ไม่ใช่ที่อยู่บ้าน) · คนในอำเภอเดียวกันจะกระจายรอบจุดกลางอำเภอ</li>
+      <li><b>ภาค</b> = ภาคตามบัญชีผู้ผ่านการอบรม ไม่ใช่หลักสูตรที่เรียน — คนภาคอื่นจึงอาจอยู่ใน "พื้นฐาน (ภาค 2)" ได้ และอาจทำงานอยู่ต่างภาคเพราะย้ายที่ทำงาน</li>
+      <li>กดชื่อภาคในแถบด้านบนเพื่อซ่อน/แสดงภาคนั้น · ตัวกรองด้านบนใช้ร่วมกันได้ ตัวเลขทุกจุดจะคำนวณใหม่ตามตัวกรอง</li>
+    </ul>
+  </details>
   <div class="mapbox">
     <div id="map" role="region" aria-label="แผนที่ดาวเทียมแสดงหมุดรายชื่อจิตอาสา 904"></div>
     <div class="layers"><button data-l="sat" class="on">ดาวเทียม</button><button data-l="road">แผนที่ถนน</button></div>
@@ -165,7 +181,21 @@ const road = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{m
 document.querySelectorAll(".layers button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".layers button").forEach(x=>x.classList.toggle("on",x===b));
   if(b.dataset.l==="sat"){ map.removeLayer(road); sat.addTo(map);} else { map.removeLayer(sat); road.addTo(map);} });
-const cluster = L.markerClusterGroup({chunkedLoading:true, maxClusterRadius:55, spiderfyOnMaxZoom:true, showCoverageOnHover:false, disableClusteringAtZoom:16});
+const REG_ORDER=["1","2","3","4","กทม."];
+function donutIcon(c){
+  const ms=c.getAllChildMarkers(), n=ms.length, cnt={};
+  ms.forEach(m=>{const r=m.options.reg; cnt[r]=(cnt[r]||0)+1;});
+  const S=n<10?34:n<100?40:n<1000?48:56, R=S/2-4, C=2*Math.PI*R, W=n<100?6:8;
+  let off=0, segs="";
+  REG_ORDER.concat(Object.keys(cnt).filter(k=>!REG_ORDER.includes(k))).forEach(k=>{
+    const v=cnt[k]; if(!v) return; const len=v/n*C;
+    segs+=`<circle r="${R}" cx="${S/2}" cy="${S/2}" fill="none" stroke="${(REG[k]||{hex:"#5E6577"}).hex}" stroke-width="${W}" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 ${S/2} ${S/2})"/>`;
+    off+=len; });
+  const txt=n>=10000?Math.round(n/1000)+"k":n.toLocaleString("th-TH");
+  const tip=REG_ORDER.filter(k=>cnt[k]).map(k=>REG[k].t+" "+cnt[k]).join(" · ");
+  return L.divIcon({className:"donut",iconSize:[S,S],html:`<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" role="img" aria-label="${n} คน: ${tip}"><title>${tip}</title><circle r="${R}" cx="${S/2}" cy="${S/2}" fill="#fff"/>${segs}<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" style="font-size:${n>=1000?11:12}px">${txt}</text></svg>`});
+}
+const cluster = L.markerClusterGroup({chunkedLoading:true, maxClusterRadius:55, spiderfyOnMaxZoom:true, showCoverageOnHover:false, disableClusteringAtZoom:16, iconCreateFunction:donutIcon});
 map.addLayer(cluster);
 
 function popup(p){
@@ -196,7 +226,7 @@ function build(j){
     if(!p.pos2) return;
     const r=regOf(p);
     const html=`<div class="pin${p.q===1?" approx":""}" style="--c:${r.hex}"><i>${esc(firstChar(p.name))}</i>${esc(p.rank)} ${esc(p.name)}</div>`;
-    p.m=L.marker(p.pos2,{icon:L.divIcon({className:"pinwrap",html,iconSize:null}),title:p.name}).bindPopup(()=>popup(p),{maxWidth:320});
+    p.m=L.marker(p.pos2,{icon:L.divIcon({className:"pinwrap",html,iconSize:null}),title:p.name,reg:p.reg}).bindPopup(()=>popup(p),{maxWidth:320});
   });
   const opt=(el,vals)=>{el.insertAdjacentHTML("beforeend",vals.map(v=>`<option>${esc(v)}</option>`).join(""));};
   const cnt=f=>{const c={}; P.forEach(p=>{const v=f(p); if(v) c[v]=(c[v]||0)+1;}); return c;};
