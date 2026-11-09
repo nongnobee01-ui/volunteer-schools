@@ -88,6 +88,9 @@ td small{display:block;color:var(--muted);font-size:12px}
 .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 16px;font-size:13px;color:var(--muted)}
 .live{font-size:13px;color:var(--muted);margin-top:6px}
 .note{font-size:12px;color:var(--muted);margin:6px 0 20px}
+.callbtn{display:block;margin-top:10px;text-align:center;background:var(--royal);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 10px;font-weight:600;font-size:14px}
+.callbtn small{font-weight:400;opacity:.85}
+.callbtn:hover{background:var(--royal-ink)}
 .howto{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--fg)}
 .howto summary{cursor:pointer;font-weight:600;color:var(--royal-ink)}
 .howto ul{margin:6px 0 2px;padding-left:2px;list-style:none;display:grid;gap:5px}
@@ -208,6 +211,7 @@ function popup(p){
   ${p.min?`<dt>กระทรวง</dt><dd>${esc(p.min)}</dd>`:""}
   <dt>ที่ทำงาน</dt><dd>${esc(ampLabel(p))} ${p.prov==="กรุงเทพมหานคร"?"":"จ."}${esc(p.prov)}</dd>
   ${p.mission?`<dt>ภารกิจพิเศษ</dt><dd>${esc(p.mission)}</dd>`:""}</dl>
+  <a class="callbtn" href="https://script.google.com/macros/s/AKfycbzwH76CMc6WrvQIBdgq57Xw22uAFxj6pAm6F6q7Cx0V1t79VbM-umt1VRlXy01UxKehuw/exec?id=${encodeURIComponent(p.id)}" target="_blank" rel="noopener">📞 ดูเบอร์ติดต่อ <small>(เฉพาะผู้มีสิทธิ์)</small></a>
   ${p.q===1?`<div class="warn">ตำแหน่งหมุดประมาณกลางจังหวัด (หาอำเภอไม่เจอ)</div>`:""}</div>`;
 }
 
