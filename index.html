@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="20261109144542">
+<meta name="build" content="20261109190110">
 <script>
 /* ถ้าบนเว็บมีหน้าเวอร์ชันใหม่กว่า ให้โหลดใหม่เองอัตโนมัติ (ใช้ลิงก์เดิมได้ตลอด) */
 (function(){try{var me=document.querySelector('meta[name=build]').content;
@@ -281,7 +281,7 @@ nav a .dot{display:none}
   <!-- แผนที่ + รายชื่อ จอส.904 -->
   <section id="v-map">
     <div class="head"><span class="bar" style="background:#6E9BF0"></span><div><h2>แผนที่ + รายชื่อ จิตอาสา 904</h2><p>ผู้ผ่านการฝึกอบรมหลักสูตรจิตอาสา 904 รวม 35 รุ่น · ปักหมุดตามอำเภอที่ทำงาน · <a class="lnk" href="jos904.html" target="_blank" rel="noopener">เปิดเต็มจอ ↗</a></p></div></div>
-    <iframe id="josFrame" src="jos904.html?embed=1" title="แผนที่และรายชื่อจิตอาสา 904" loading="lazy" style="width:100%;height:1500px;border:0;display:block;border-radius:14px"></iframe>
+    <iframe id="josFrame" src="jos904.html?embed=1&v=20261109155028" title="แผนที่และรายชื่อจิตอาสา 904" loading="lazy" style="width:100%;height:1500px;border:0;display:block;border-radius:14px"></iframe>
   </section>
 
   <!-- จอส.904 -->
@@ -424,6 +424,7 @@ function opts(el, items){ const v=el.value; el.innerHTML=el.options[0].outerHTML
 const provsOf = arr => [...new Set(arr.map(x=>x.prov).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
 function fillFilters(){
   opts($("jProv"),provsOf(D.jos)); opts($("uProv"),provsOf(D.unit)); opts($("tProv"),provsOf(D.trip)); opts($("kProv"),provsOf(D.kru));
+  D.unit.forEach(x=>{ const t=String(x.type||"").replace(/\s+/g,"").replace(/\.+$/,""); x.type = t ? (/^(ฉก|ทภ|มทบ|พล|กองพล)/.test(t)? t+".":t) : ""; x.type=x.type.replace(/^ทภ\.\.?(\d)/,"ทภ.$1").replace(/^(ทภ\.\d+)\.$/,"$1"); });
   opts($("uType"),[...new Set(D.unit.map(s=>s.type).filter(Boolean))]);
   const units=[...new Set(D.unit.map(s=>s.unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
   $("whoList").innerHTML=units.map(u=>`<option value="${esc(u)}">`).join("");
