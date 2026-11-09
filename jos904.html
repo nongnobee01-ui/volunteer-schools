@@ -196,7 +196,7 @@ function donutIcon(c){
     off+=len; });
   const txt=n>=10000?Math.round(n/1000)+"k":n.toLocaleString("th-TH");
   const tip=REG_ORDER.filter(k=>cnt[k]).map(k=>REG[k].t+" "+cnt[k]).join(" · ");
-  return L.divIcon({className:"donut",iconSize:[S,S],html:`<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" role="img" aria-label="${n} คน: ${tip}"><title>${tip}</title><circle r="${R}" cx="${S/2}" cy="${S/2}" fill="#fff"/>${segs}<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" style="font-size:${n>=1000?11:12}px">${txt}</text></svg>`});
+  return L.divIcon({className:"donut",iconSize:[S,S],html:`<div title="${tip}"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" role="img" aria-label="${n} คน: ${tip}"><circle r="${R}" cx="${S/2}" cy="${S/2}" fill="#fff"/>${segs}<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" style="font-size:${n>=1000?11:12}px">${txt}</text></svg></div>`});
 }
 const cluster = L.markerClusterGroup({chunkedLoading:true, maxClusterRadius:55, spiderfyOnMaxZoom:true, showCoverageOnHover:false, disableClusteringAtZoom:16, iconCreateFunction:donutIcon});
 map.addLayer(cluster);
