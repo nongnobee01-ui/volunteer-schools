@@ -2,6 +2,13 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="build" content="20261109144542">
+<script>
+/* ถ้าบนเว็บมีหน้าเวอร์ชันใหม่กว่า ให้โหลดใหม่เองอัตโนมัติ (ใช้ลิงก์เดิมได้ตลอด) */
+(function(){try{var me=document.querySelector('meta[name=build]').content;
+fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){
+var m=t.match(/<meta name="build" content="(\d+)"/); if(m&&m[1]!==me){var k='reloaded-'+m[1]; if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1'); location.reload();}}}).catch(function(){});}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="ศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน · ข้อมูลเครือข่าย 4 กลุ่ม และรายงานติดตามกิจกรรม">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=2">
