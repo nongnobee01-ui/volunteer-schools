@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");</script>
 <style>
 :root{
   --sun:#FFD21F; --royal:#1F4FA8; --royal-ink:#173B7E;
@@ -88,6 +89,11 @@ td small{display:block;color:var(--muted);font-size:12px}
 .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 16px;font-size:13px;color:var(--muted)}
 .live{font-size:13px;color:var(--muted);margin-top:6px}
 .note{font-size:12px;color:var(--muted);margin:6px 0 20px}
+.embed body{background:transparent}
+.embed .band,.embed nav{display:none}
+.embed main.wrap{max-width:none;padding:0}
+.embed #map{height:620px;min-height:0}
+.embed .cmodal{position:absolute;inset:0 0 auto 0;height:100%;align-items:start}
 .callbtn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;margin-top:10px;text-align:center;background:var(--royal);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 10px;font-weight:600;font-size:14px}
 
 .cmodal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:3000;display:grid;place-items:center;padding:16px}
@@ -206,7 +212,7 @@ const ampLabel = p => { const a=String(p.amp||"").replace(/^(อำเภอ|อ
 const firstChar = n => { const m = String(n).replace(/^\s+/,"").match(/[ก-ฮA-Za-z]/); return m ? m[0] : "•"; };
 
 let P=[], shown=[], page=0, regOff=new Set();
-const PER=50;
+const PER=document.documentElement.classList.contains("embed")?15:50;
 
 // แผนที่
 const map = L.map("map",{zoomControl:true, preferCanvas:false}).setView([13.4,101],6);
@@ -373,6 +379,12 @@ $("cmClose").onclick=()=>{$("cmodal").hidden=true;};
 $("cmodal").addEventListener("click",e=>{ if(e.target.id==="cmodal") $("cmodal").hidden=true; });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("cmodal").hidden=true; });
 $("cmForget").onclick=()=>{ tkSet(""); $("cmBody").innerHTML=""; cmShowForm("ลบรหัสที่จำไว้บนเครื่องนี้แล้ว"); };
+
+if(document.documentElement.classList.contains("embed")){
+  const post=()=>parent.postMessage({type:"jos904-height",h:document.documentElement.scrollHeight},"*");
+  new ResizeObserver(post).observe(document.body); addEventListener("load",post); setInterval(post,2000);
+  document.addEventListener("click",e=>{ if(e.target.closest(".callbtn[data-id]")) { const y=Math.max(10,e.pageY-220); document.querySelector("#cmodal .cbox").style.marginTop=y+"px"; } },true);
+}
 </script>
 </body>
 </html>
