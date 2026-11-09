@@ -88,7 +88,25 @@ td small{display:block;color:var(--muted);font-size:12px}
 .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 16px;font-size:13px;color:var(--muted)}
 .live{font-size:13px;color:var(--muted);margin-top:6px}
 .note{font-size:12px;color:var(--muted);margin:6px 0 20px}
-.callbtn{display:block;margin-top:10px;text-align:center;background:var(--royal);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 10px;font-weight:600;font-size:14px}
+.callbtn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;margin-top:10px;text-align:center;background:var(--royal);color:#fff!important;text-decoration:none;border-radius:10px;padding:8px 10px;font-weight:600;font-size:14px}
+
+.cmodal{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:3000;display:grid;place-items:center;padding:16px}
+.cmodal[hidden]{display:none}
+.cbox{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:18px 18px 14px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.cbox h3{font:500 18px var(--display);margin:0 0 2px}
+.cwho{color:var(--muted);font-size:14px;margin-bottom:10px}
+.cclose{position:absolute;top:8px;right:10px;border:0;background:none;font-size:24px;cursor:pointer;color:var(--muted)}
+#cmForm label{display:block;font-size:13px;margin:6px 0 4px}
+#cmForm input[type=password]{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+#cmForm .crem{display:flex;gap:6px;align-items:center;color:var(--muted)}
+.cmsg{font-size:13px;color:#C2412D;min-height:1px;margin:6px 0}
+.crow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.crow dt{color:var(--muted);font-size:13px}
+.crow a{color:var(--royal);font-weight:600;text-decoration:none}
+.ccopy{border:1px solid var(--line);background:#fff;border-radius:8px;font:12px var(--body);padding:3px 8px;cursor:pointer}
+.csec{font:600 13px var(--body);color:var(--royal-ink);margin:10px 0 2px}
+.cfoot{font-size:11px;color:var(--muted);margin-top:10px}
+.clink{border:0;background:none;color:var(--royal);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
 .callbtn small{font-weight:400;opacity:.85}
 .callbtn:hover{background:var(--royal-ink)}
 .howto{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:0 0 10px;font-size:13px;color:var(--fg)}
@@ -160,6 +178,22 @@ td small{display:block;color:var(--muted);font-size:12px}
   </div>
   <div class="note">หมุดวางตามอำเภอที่ทำงาน (ไม่ใช่ที่อยู่จริงรายคน) — คนในอำเภอเดียวกันจะกระจายรอบจุดกลางอำเภอ · หมุดเส้นประ = ทราบแค่จังหวัด · ภาพดาวเทียม © Esri, Maxar · แผนที่ถนน © OpenStreetMap</div>
 </main>
+<div class="cmodal" id="cmodal" hidden role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+  <div class="cbox">
+    <button type="button" class="cclose" id="cmClose" aria-label="ปิด">×</button>
+    <h3 id="cmTitle">ข้อมูลติดต่อ</h3>
+    <div id="cmWho" class="cwho"></div>
+    <form id="cmForm" hidden>
+      <label for="cmPw">รหัสสำหรับดูข้อมูลติดต่อ</label>
+      <input id="cmPw" type="password" autocomplete="current-password" required minlength="1">
+      <label class="crem"><input type="checkbox" id="cmRem" checked> จำรหัสบนเครื่องนี้ (ครั้งต่อไปไม่ต้องใส่)</label>
+      <button type="submit" class="callbtn">ดูข้อมูล</button>
+    </form>
+    <div id="cmMsg" class="cmsg"></div>
+    <div id="cmBody"></div>
+    <div class="cfoot">ข้อมูลส่วนบุคคล ใช้เพื่อประสานงานเท่านั้น ห้ามส่งต่อ · <button type="button" id="cmForget" class="clink">ลืมรหัสบนเครื่องนี้</button></div>
+  </div>
+</div>
 
 <script>
 const REG = { "กทม.":{c:"var(--r-bkk)",hex:"#7B3FB8",t:"กทม."}, "1":{c:"var(--r1)",hex:"#1F4FA8",t:"ภาค 1"}, "2":{c:"var(--r2)",hex:"#1E8A5A",t:"ภาค 2"}, "3":{c:"var(--r3)",hex:"#D9480F",t:"ภาค 3"}, "4":{c:"var(--r4)",hex:"#B7791F",t:"ภาค 4"} };
@@ -211,7 +245,7 @@ function popup(p){
   ${p.min?`<dt>กระทรวง</dt><dd>${esc(p.min)}</dd>`:""}
   <dt>ที่ทำงาน</dt><dd>${esc(ampLabel(p))} ${p.prov==="กรุงเทพมหานคร"?"":"จ."}${esc(p.prov)}</dd>
   ${p.mission?`<dt>ภารกิจพิเศษ</dt><dd>${esc(p.mission)}</dd>`:""}</dl>
-  <a class="callbtn" href="https://script.google.com/macros/s/AKfycbzwH76CMc6WrvQIBdgq57Xw22uAFxj6pAm6F6q7Cx0V1t79VbM-umt1VRlXy01UxKehuw/exec?id=${encodeURIComponent(p.id)}" target="_blank" rel="noopener">📞 ดูเบอร์ติดต่อ <small>(เฉพาะผู้มีสิทธิ์)</small></a>
+  <button type="button" class="callbtn" data-id="${esc(p.id)}" data-name="${esc(p.rank+' '+p.name)}">📞 ดูเบอร์ติดต่อ <small>(ใส่รหัส)</small></button>
   ${p.q===1?`<div class="warn">ตำแหน่งหมุดประมาณกลางจังหวัด (หาอำเภอไม่เจอ)</div>`:""}</div>`;
 }
 
@@ -297,6 +331,48 @@ $("pnext").onclick=()=>{page++; renderList();};
 fetch("jos904.json").then(r=>{ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
   .then(j=>{ build(j); $("live").textContent=`แสดงหมุดตามอำเภอที่ทำงาน · ซูมเข้าเพื่อเห็นชื่อรายคน กดหมุดเพื่อดูข้อมูล`; })
   .catch(e=>{ $("live").textContent="โหลดข้อมูลไม่สำเร็จ ("+e.message+")"; });
+
+// ---------- ดูเบอร์ติดต่อ (ใส่รหัส) ----------
+const CONTACT_API = "https://script.google.com/macros/s/AKfycbwuZD75TmWRTSmSvsSBNQJmfPxIOYvHlT6av-0O9QotYMR7Tk7ny2MKQW7zxCweWwF8/exec";
+const TK="jos904_contact_token";
+const tkGet=()=>{try{return localStorage.getItem(TK)||"";}catch(e){return "";}};
+const tkSet=v=>{try{v?localStorage.setItem(TK,v):localStorage.removeItem(TK);}catch(e){}};
+let cmId="";
+async function cmCall(body){
+  const r=await fetch(CONTACT_API,{method:"POST",body:JSON.stringify(body)});
+  return r.json();
+}
+function cmShowForm(msg){ $("cmForm").hidden=false; $("cmBody").innerHTML=""; $("cmMsg").textContent=msg||""; setTimeout(()=>$("cmPw").focus(),50); }
+function cmRender(c){
+  const tel=v=>String(v).split(/[,/]|\s{2,}/).map(s=>s.trim()).filter(Boolean).map(s=>{const d=s.replace(/[^\d]/g,""); return d.length>=9?`<a href="tel:${d}">${esc(s)}</a>`:esc(s);}).join(", ");
+  const row=(k,v,isTel)=>v?`<div class="crow"><dt>${k}</dt><dd style="margin:0">${isTel?tel(v):esc(v)}</dd><button type="button" class="ccopy" data-copy="${esc(v)}">คัดลอก</button></div>`:"";
+  const a=row("เบอร์โทร",c.tel,true)+row("LINE",c.line)+row("Facebook",c.fb)+row("อีเมล",c.email);
+  const b=row("ชื่อ",c.emName)+row("เบอร์",c.emTel,true)+row("ความเกี่ยวข้อง",c.emRel);
+  $("cmBody").innerHTML=(a?`<div class="csec">ติดต่อ</div>${a}`:"")+(b?`<div class="csec">ผู้ติดต่อกรณีฉุกเฉิน</div>${b}`:"")||`<div class="cmsg" style="color:var(--muted)">ไม่มีข้อมูลติดต่อในบัญชี</div>`;
+}
+async function cmLoad(pw){
+  $("cmMsg").textContent="กำลังโหลด…"; $("cmBody").innerHTML="";
+  try{
+    const body={id:cmId}; if(pw) body.pw=pw; else body.token=tkGet();
+    const j=await cmCall(body);
+    if(!j.ok){ if(j.auth===false||j.locked){ if(!pw) tkSet(""); return cmShowForm(j.error);} $("cmMsg").textContent=j.error||"เกิดข้อผิดพลาด"; return; }
+    if(pw && $("cmRem").checked) tkSet(j.token);
+    $("cmForm").hidden=true; $("cmMsg").textContent="";
+    if(j.found===false) { $("cmBody").innerHTML=`<div class="cmsg" style="color:var(--muted)">ไม่พบรหัสนี้ในบัญชีข้อมูลเต็ม</div>`; return; }
+    cmRender(j.contact||{});
+  }catch(e){ $("cmMsg").textContent="เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง"; }
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".callbtn[data-id]");
+  if(b){ cmId=b.dataset.id; $("cmWho").textContent=b.dataset.name+" · "+cmId; $("cmPw").value=""; $("cmodal").hidden=false;
+    if(tkGet()) { $("cmForm").hidden=true; cmLoad(); } else cmShowForm(); return; }
+  const c=e.target.closest(".ccopy"); if(c){ navigator.clipboard&&navigator.clipboard.writeText(c.dataset.copy).then(()=>{c.textContent="คัดลอกแล้ว"; setTimeout(()=>c.textContent="คัดลอก",1200);}); }
+},true);
+$("cmForm").addEventListener("submit",e=>{e.preventDefault(); cmLoad($("cmPw").value);});
+$("cmClose").onclick=()=>{$("cmodal").hidden=true;};
+$("cmodal").addEventListener("click",e=>{ if(e.target.id==="cmodal") $("cmodal").hidden=true; });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("cmodal").hidden=true; });
+$("cmForget").onclick=()=>{ tkSet(""); $("cmBody").innerHTML=""; cmShowForm("ลบรหัสที่จำไว้บนเครื่องนี้แล้ว"); };
 </script>
 </body>
 </html>
