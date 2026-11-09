@@ -2,6 +2,13 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="build" content="20261109155028">
+<script>
+/* ถ้าบนเว็บมีหน้าเวอร์ชันใหม่กว่า ให้โหลดใหม่เองอัตโนมัติ (ใช้ลิงก์เดิมได้ตลอด) */
+(function(){try{var me=document.querySelector('meta[name=build]').content;
+fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){
+var m=t.match(/<meta name="build" content="(\d+)"/); if(m&&m[1]!==me){var k='reloaded-'+m[1]; if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1'); location.reload();}}}).catch(function(){});}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>จิตอาสา 904 · แผนที่เครือข่าย · ศอญ.</title>
 <meta name="description" content="ศูนย์อำนวยการใหญ่จิตอาสาพระราชทาน · แผนที่ผู้ผ่านการฝึกอบรมหลักสูตรจิตอาสา 904 รวม 35 รุ่น">
@@ -298,9 +305,9 @@ function apply(){
   const rc={}; base.forEach(p=>rc[p.reg]=(rc[p.reg]||0)+1);
   $("legend").innerHTML=Object.keys(REG).map(k=>`<button class="leg${regOff.has(k)?" off":""}" data-r="${k}" style="--c:${REG[k].hex}" title="กดเพื่อซ่อน/แสดง"><i></i>${REG[k].t} · ${fmt(rc[k]||0)}</button>`).join("");
   document.querySelectorAll(".leg").forEach(el=>el.onclick=()=>{const r=el.dataset.r; regOff.has(r)?regOff.delete(r):regOff.add(r); apply();});
-  const provs=new Set(shown.map(p=>p.prov)), amps=new Set(shown.filter(p=>p.q===2).map(p=>p.prov+"|"+p.amp));
+  const provs=new Set(shown.map(p=>p.prov).filter(Boolean)), amps=new Set(shown.filter(p=>p.q===2&&p.ll).map(p=>p.ll.join(",")));
   const noLoc=shown.filter(p=>!p.m).length;
-  $("stats").innerHTML=[[fmt(shown.length),"คน"],[fmt(provs.size),"จังหวัด"],[fmt(amps.size),"อำเภอ"],[fmt(new Set(shown.map(p=>p.course+p.batch)).size),"รุ่น"]]
+  $("stats").innerHTML=[[fmt(shown.length),"คน"],[fmt(provs.size),"จังหวัด"],[fmt(amps.size),"อำเภอ/เขต"],[fmt(new Set(shown.map(p=>p.course+p.batch)).size),"รุ่น"]]
     .map(([b,l])=>`<span class="stat"><b>${b}</b>${l}</span>`).join("")+(noLoc?`<span class="stat">ไม่มีพิกัด ${fmt(noLoc)} คน (ดูในรายชื่อ)</span>`:"");
   cluster.clearLayers();
   cluster.addLayers(shown.filter(p=>p.m).map(p=>p.m));
