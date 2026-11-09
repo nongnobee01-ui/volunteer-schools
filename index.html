@@ -57,6 +57,9 @@ img{max-width:100%}
 .live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1E8A5A;margin-right:6px;vertical-align:1px}
 .live.off i{background:#C2412D}
 nav{background:#173B7E;position:sticky;top:0;z-index:1000}
+main section{scroll-margin-top:64px;padding-top:8px;margin-bottom:44px}
+main section+section{border-top:1px dashed var(--line);padding-top:26px}
+@media (min-width:900px){main section{scroll-margin-top:16px}}
 nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 nav a{color:#DCE6FA;text-decoration:none;padding:11px 12px;font-size:15px;white-space:nowrap;border-bottom:3px solid transparent}
 nav a.on{color:#fff;border-color:var(--sun);font-weight:600}
@@ -233,19 +236,19 @@ nav a .dot{display:none}
 </div></header>
 <div class="shell">
 <nav aria-label="เมนูหลัก"><div class="navin">
-  <div class="ng"><a href="#home" data-v="home">ภาพรวม</a></div>
-  <div class="ng"><span class="gh">1. เครือข่ายเยาวชน ศอญ.</span>
-    <a href="#jos" data-v="jos"><span class="dot" style="--c:#6E9BF0"></span>1.1 จอส.904</a>
-    <a href="#unit" data-v="unit"><span class="dot" style="--c:#F2C318"></span>1.2 ฉก./หน่วยในกองทัพ</a>
-    <a href="#trip" data-v="trip"><span class="dot" style="--c:#4CC38A"></span>1.3 OVN / Day trip</a>
-    <a href="#kru" data-v="kru"><span class="dot" style="--c:#F48A5B"></span>1.4 ครู ก</a>
+  <div class="ng"><a href="#home" data-v="home">ภาพรวม</a>
+    <a href="#map" data-v="map"><span class="dot" style="--c:#6E9BF0"></span>แผนที่ + รายชื่อ จิตอาสา 904</a>
   </div>
-  <div class="ng"><span class="gh">2. การติดตามกิจกรรม</span>
+  <div class="ng"><span class="gh">เครือข่ายเยาวชน ศอญ.</span>
+    <a href="#jos" data-v="jos"><span class="dot" style="--c:#6E9BF0"></span>จอส.904</a>
+    <a href="#unit" data-v="unit"><span class="dot" style="--c:#F2C318"></span>รร.ที่ ฉก.ทม.รอ.904 รับ</a>
+    <a href="#trip" data-v="trip"><span class="dot" style="--c:#4CC38A"></span>OVN / Day trip</a>
+    <a href="#kru" data-v="kru"><span class="dot" style="--c:#F48A5B"></span>ครู ก</a>
+  </div>
+  <div class="ng"><span class="gh">การติดตามกิจกรรม</span>
     <a href="#activity" data-v="activity">สรุปรายวัน / รายเดือน</a>
+    <a href="weekly.html">สรุปประจำสัปดาห์</a>
     <a href="#report" data-v="report" class="cta">+ รายงานกิจกรรม</a>
-  </div>
-  <div class="ng"><span class="gh">3. แผนที่จิตอาสา 904</span>
-    <a href="jos904.html"><span class="dot" style="--c:#6E9BF0"></span>แผนที่ + รายชื่อ จอส.904</a>
   </div>
 </div></nav>
 
@@ -263,14 +266,20 @@ nav a .dot{display:none}
       </div>
       <div class="box">
         <h3 style="margin-bottom:8px">แยกตามจังหวัด <span class="small" style="display:inline">· กดที่จังหวัดเพื่อดูรายอำเภอ</span></h3>
-        <div class="tbl-wrap"><table><thead><tr><th>จังหวัด</th><th class="n" title="จอส.904"><span class="dot" style="--c:var(--n-jos)"></span></th><th class="n" title="ฉก./หน่วยในกองทัพ"><span class="dot" style="--c:var(--n-unit)"></span></th><th class="n" title="OVN/Day trip"><span class="dot" style="--c:var(--n-trip)"></span></th><th class="n" title="ครู ก"><span class="dot" style="--c:var(--n-kru)"></span></th><th class="n">รวม</th></tr></thead><tbody id="provTbl"></tbody></table></div>
+        <div class="tbl-wrap"><table><thead><tr><th>จังหวัด</th><th class="n" title="จอส.904"><span class="dot" style="--c:var(--n-jos)"></span></th><th class="n" title="รร.ที่ ฉก.ทม.รอ.904 รับ"><span class="dot" style="--c:var(--n-unit)"></span></th><th class="n" title="OVN/Day trip"><span class="dot" style="--c:var(--n-trip)"></span></th><th class="n" title="ครู ก"><span class="dot" style="--c:var(--n-kru)"></span></th><th class="n">รวม</th></tr></thead><tbody id="provTbl"></tbody></table></div>
       </div>
     </div>
   </section>
 
-  <!-- 1.1 จอส.904 -->
-  <section id="v-jos" hidden style="--c:var(--n-jos)">
-    <div class="head"><span class="bar"></span><div><h2>1.1 เครือข่าย จอส.904</h2><p>ค้นหาด้วยชื่อ หน่วย/สังกัด หรือจังหวัด</p></div></div>
+  <!-- แผนที่ + รายชื่อ จอส.904 -->
+  <section id="v-map">
+    <div class="head"><span class="bar" style="background:#6E9BF0"></span><div><h2>แผนที่ + รายชื่อ จิตอาสา 904</h2><p>ผู้ผ่านการฝึกอบรมหลักสูตรจิตอาสา 904 รวม 35 รุ่น · ปักหมุดตามอำเภอที่ทำงาน · <a class="lnk" href="jos904.html" target="_blank" rel="noopener">เปิดเต็มจอ ↗</a></p></div></div>
+    <iframe id="josFrame" src="jos904.html?embed=1" title="แผนที่และรายชื่อจิตอาสา 904" loading="lazy" style="width:100%;height:1500px;border:0;display:block;border-radius:14px"></iframe>
+  </section>
+
+  <!-- จอส.904 -->
+  <section id="v-jos" style="--c:var(--n-jos)">
+    <div class="head"><span class="bar"></span><div><h2>เครือข่าย จอส.904</h2><p>ค้นหาด้วยชื่อ หน่วย/สังกัด หรือจังหวัด</p></div></div>
     <div class="toolbar">
       <label class="search" for="jq"><span aria-hidden="true">🔍</span><input id="jq" type="search" placeholder="พิมพ์ชื่อ-สกุล"></label>
       <select class="sel" id="jProv" aria-label="จังหวัด"><option value="">ทุกจังหวัด</option></select>
@@ -279,8 +288,8 @@ nav a .dot{display:none}
   </section>
 
   <!-- 1.2 ฉก./หน่วย -->
-  <section id="v-unit" hidden style="--c:var(--n-unit)">
-    <div class="head"><span class="bar"></span><div><h2>1.2 เครือข่าย ฉก.ทม.รอ.904 และหน่วยในกองทัพ</h2><p>ค้นหาหน่วยรับผิดชอบ แล้วดูโรงเรียนที่หน่วยดูแล</p></div></div>
+  <section id="v-unit" style="--c:var(--n-unit)">
+    <div class="head"><span class="bar"></span><div><h2>รร.ที่ ฉก.ทม.รอ.904 รับ</h2><p>ค้นหาหน่วยรับผิดชอบ แล้วดูโรงเรียนที่หน่วยดูแล</p></div></div>
     <div class="toolbar">
       <label class="search" for="uq"><span aria-hidden="true">🔍</span><input id="uq" type="search" placeholder="พิมพ์ชื่อหน่วย เช่น ร.111 หรือ มทบ.15 หรือชื่อโรงเรียน"></label>
       <select class="sel" id="uType" aria-label="ประเภท"><option value="">ทุกประเภท</option></select>
@@ -290,8 +299,8 @@ nav a .dot{display:none}
   </section>
 
   <!-- 1.3 trip -->
-  <section id="v-trip" hidden style="--c:var(--n-trip)">
-    <div class="head"><span class="bar"></span><div><h2>1.3 เครือข่าย Overnight trip / Day trip</h2><p>กดที่โรงเรียนเพื่อดูรายละเอียด</p></div></div>
+  <section id="v-trip" style="--c:var(--n-trip)">
+    <div class="head"><span class="bar"></span><div><h2>เครือข่าย Overnight trip / Day trip</h2><p>กดที่โรงเรียนเพื่อดูรายละเอียด</p></div></div>
     <div class="tabs" id="tTabs"></div>
     <div class="toolbar">
       <label class="search" for="tq"><span aria-hidden="true">🔍</span><input id="tq" type="search" placeholder="ค้นชื่อโรงเรียน หน่วย หรือจังหวัด"></label>
@@ -301,8 +310,8 @@ nav a .dot{display:none}
   </section>
 
   <!-- 1.4 ครู ก -->
-  <section id="v-kru" hidden style="--c:var(--n-kru)">
-    <div class="head"><span class="bar"></span><div><h2>1.4 เครือข่าย ครู ก</h2><p>แยก 3 กลุ่ม: ครู · ทหารตำรวจ · ปราชญ์ชาวบ้าน</p></div></div>
+  <section id="v-kru" style="--c:var(--n-kru)">
+    <div class="head"><span class="bar"></span><div><h2>เครือข่าย ครู ก</h2><p>แยก 3 กลุ่ม: ครู · ทหารตำรวจ · ปราชญ์ชาวบ้าน</p></div></div>
     <div class="groups" id="kGroups"></div>
     <div class="toolbar">
       <label class="search" for="kq"><span aria-hidden="true">🔍</span><input id="kq" type="search" placeholder="ค้นชื่อ สังกัด ความเชี่ยวชาญ หรือจังหวัด"></label>
@@ -312,7 +321,7 @@ nav a .dot{display:none}
   </section>
 
   <!-- 2 ติดตามกิจกรรม -->
-  <section id="v-activity" hidden>
+  <section id="v-activity">
     <div class="head"><div><h2>การติดตามกิจกรรม</h2><p>สรุปรายงานที่ส่งเข้ามา แยกรายวันและรายเดือน</p></div></div>
     <div class="toolbar">
       <select class="sel" id="aNet" aria-label="เครือข่าย"><option value="">ทุกเครือข่าย</option></select>
@@ -329,14 +338,14 @@ nav a .dot{display:none}
   </section>
 
   <!-- ฟอร์ม -->
-  <section id="v-report" hidden>
+  <section id="v-report">
     <form class="form" id="form" novalidate>
       <div class="box">
         <h2>รายงานกิจกรรม</h2>
-        <div class="fld"><span class="lbl">2.1 ชื่อเครือข่าย <em>*</em></span><div class="pick" id="fNet"></div></div>
-        <div class="fld"><label for="fWho">2.2 ชื่อหน่วย / ชื่อตัว <em>*</em></label><input id="fWho" list="whoList" maxlength="150" placeholder="เช่น ร.111 พัน.1 หรือ ร.ท.สมชาย ใจดี"><datalist id="whoList"></datalist></div>
-        <div class="fld"><label for="fAct">2.3 ชื่อกิจกรรมที่ทำ <em>*</em></label><input id="fAct" maxlength="300" placeholder="เช่น อบรมจิตอาสาภัยพิบัติ โรงเรียนดัดดรุณี"></div>
-        <div class="fld"><label for="fLink">2.4 ลิงก์ที่โพสต์ไป <em>*</em></label><textarea id="fLink" maxlength="1000" placeholder="https://www.facebook.com/..."></textarea><span class="hint">ใส่ได้หลายลิงก์ ขึ้นบรรทัดใหม่ทีละลิงก์</span></div>
+        <div class="fld"><span class="lbl">ชื่อเครือข่าย <em>*</em></span><div class="pick" id="fNet"></div></div>
+        <div class="fld"><label for="fWho">ชื่อหน่วย / ชื่อตัว <em>*</em></label><input id="fWho" list="whoList" maxlength="150" placeholder="เช่น ร.111 พัน.1 หรือ ร.ท.สมชาย ใจดี"><datalist id="whoList"></datalist></div>
+        <div class="fld"><label for="fAct">ชื่อกิจกรรมที่ทำ <em>*</em></label><input id="fAct" maxlength="300" placeholder="เช่น อบรมจิตอาสาภัยพิบัติ โรงเรียนดัดดรุณี"></div>
+        <div class="fld"><label for="fLink">ลิงก์ที่โพสต์ไป <em>*</em></label><textarea id="fLink" maxlength="1000" placeholder="https://www.facebook.com/..."></textarea><span class="hint">ใส่ได้หลายลิงก์ ขึ้นบรรทัดใหม่ทีละลิงก์</span></div>
         <div class="fld"><label for="fDate">วันที่ทำกิจกรรม <em>*</em></label><input id="fDate" type="date"></div>
       </div>
       <div class="box">
@@ -363,10 +372,10 @@ const REFRESH_MS = 3 * 60 * 1000;
 /* ===================== */
 
 const NETS = [
-  {key:"jos",  short:"จอส.904",           name:"จอส.904",                        full:"1.1 เครือข่าย จอส.904",                           unitWord:"คน",      tab:"จอส904"},
-  {key:"unit", short:"ฉก./หน่วยในกองทัพ", name:"ฉก.ทม.รอ.904 และหน่วยในกองทัพ",  full:"1.2 เครือข่าย ฉก.ทม.รอ.904 และหน่วยในกองทัพ",    unitWord:"โรงเรียน", tab:"Sheet1"},
-  {key:"trip", short:"OVN / Day trip",    name:"Overnight trip / Day trip",      full:"1.3 เครือข่าย Overnight trip / Day trip",          unitWord:"โรงเรียน", tab:"OVN-DAYTRIP"},
-  {key:"kru",  short:"ครู ก",             name:"ครู ก",                          full:"1.4 เครือข่าย ครู ก",                              unitWord:"คน",      tab:"ครูก"},
+  {key:"jos",  short:"จอส.904",           name:"จอส.904",                        full:"เครือข่าย จอส.904", label:"จอส.904",                           unitWord:"คน",      tab:"จอส904"},
+  {key:"unit", short:"รร.ที่ ฉก.ทม.รอ.904 รับ", name:"ฉก.ทม.รอ.904 และหน่วยในกองทัพ",  full:"รร.ที่ ฉก.ทม.รอ.904 รับ", label:"รร.ที่ ฉก.ทม.รอ.904 รับ",    unitWord:"โรงเรียน", tab:"Sheet1"},
+  {key:"trip", short:"OVN / Day trip",    name:"Overnight trip / Day trip",      full:"เครือข่าย Overnight trip / Day trip", label:"Overnight trip / Day trip",          unitWord:"โรงเรียน", tab:"OVN-DAYTRIP"},
+  {key:"kru",  short:"ครู ก",             name:"ครู ก",                          full:"เครือข่าย ครู ก", label:"ครู ก",                              unitWord:"คน",      tab:"ครูก"},
 ];
 const NET_BY_NAME = Object.fromEntries(NETS.map(n=>[n.name,n]));
 const KRU_GROUPS = ["ครู","ทหารตำรวจ","ปราชญ์ชาวบ้าน"];
@@ -415,7 +424,7 @@ function fillFilters(){
   const am=$("aMonth"), v=am.value; am.innerHTML=months.map(m=>`<option value="${m}">${thMonth(m)}</option>`).join(""); am.value=v||months[0];
 }
 function renderAll(){ home(); jos(); unit(); trip(); kru(); activity(); }
-const emptyNet = n => `<div class="empty">ยังไม่มีข้อมูล${esc(n.full.replace(/^\S+\s/,""))}<br>เพิ่มรายชื่อในแท็บ <code>${esc(n.tab)}</code> ของ Google Sheets แล้วหน้านี้จะแสดงเอง</div>`;
+const emptyNet = n => `<div class="empty">ยังไม่มีข้อมูล${esc(n.full)}<br>เพิ่มรายชื่อในแท็บ <code>${esc(n.tab)}</code> ของ Google Sheets แล้วหน้านี้จะแสดงเอง</div>`;
 
 /* ---------- home: layer 1 ---------- */
 function home(){
@@ -426,7 +435,7 @@ function home(){
     kru:()=>KRU_GROUPS.map(g=>`${g} ${fmt(D.kru.filter(k=>k.group===g).length)}`).join(" · "),
   };
   $("nets").innerHTML = NETS.map(n=>`<a class="net" href="#${n.key}" style="--c:var(--n-${n.key})">
-    <span class="k">${n.full.split(" ")[0]}</span><h3>${esc(n.name)}</h3>
+    <span class="k">เครือข่าย</span><h3>${esc(n.label)}</h3>
     <span class="big">${fmt(D[n.key].length)} <small>${n.unitWord}</small></span>
     <span class="sub">${D[n.key].length?sub[n.key]():"ยังไม่มีข้อมูลในชีต"}</span>
     <span class="go">ดูรายละเอียด →</span></a>`).join("");
@@ -557,14 +566,21 @@ function activity(){
 }
 
 /* ---------- routing ---------- */
-const VIEWS=["home","jos","unit","trip","kru","activity","report"];
-function route(){ const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"home";
-  VIEWS.forEach(x=>$("v-"+x).hidden=x!==v); document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.dataset.v===v));
-  window.scrollTo(0,0); if(v==="home"&&map) setTimeout(()=>map.invalidateSize(),50); }
-addEventListener("hashchange",route);
+const VIEWS=["home","map","jos","unit","trip","kru","activity","report"];
+function route(smooth){ const v=location.hash.slice(1); if(!VIEWS.includes(v)) return;
+  const el=$("v-"+v); if(el) el.scrollIntoView({behavior:smooth?"smooth":"auto",block:"start"});
+  navLock=Date.now(); document.querySelectorAll("nav a[data-v]").forEach(a=>a.classList.toggle("on",a.dataset.v===v)); }
+let navLock=0;
+addEventListener("hashchange",()=>route(true));
+addEventListener("load",()=>setTimeout(()=>route(),800));
+document.querySelectorAll('nav a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); history.replaceState(null,"",a.getAttribute("href")); route(true); }));
+document.addEventListener("click",e=>{ const a=e.target.closest('main a[href^="#"]'); if(!a) return; const v=a.getAttribute("href").slice(1); if(!VIEWS.includes(v)) return; e.preventDefault(); history.replaceState(null,"","#"+v); route(true); });
+const navIO=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting && Date.now()-navLock>1200){ const id=en.target.id.slice(2); document.querySelectorAll("nav a[data-v]").forEach(a=>a.classList.toggle("on",a.dataset.v===id)); } }),{rootMargin:"-25% 0px -65% 0px"});
+VIEWS.forEach(x=>{ const el=$("v-"+x); if(el) navIO.observe(el); });
+addEventListener("message",e=>{ const d=e.data||{}; if(d.type==="jos904-height" && d.h>300) $("josFrame").style.height=Math.ceil(d.h)+"px"; });
 
 /* ---------- form ---------- */
-$("fNet").innerHTML=NETS.map(n=>`<label style="--c:var(--n-${n.key})"><input type="radio" name="net" value="${esc(n.name)}"><span class="dot"></span>${esc(n.name)}</label>`).join("");
+$("fNet").innerHTML=NETS.map(n=>`<label style="--c:var(--n-${n.key})"><input type="radio" name="net" value="${esc(n.name)}"><span class="dot"></span>${esc(n.label)}</label>`).join("");
 let imgs=[];
 function shrink(file){ return new Promise((res,rej)=>{ const url=URL.createObjectURL(file), im=new Image();
   im.onload=()=>{ const k=Math.min(1,1600/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
